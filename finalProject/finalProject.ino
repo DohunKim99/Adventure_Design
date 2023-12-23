@@ -19,11 +19,13 @@ int trigPin = 3;
 int echoPin = 2;
 LiquidCrystal lcd(44,45,46,47,48,49);
 int flag = 0;
+int buzzer = 6;
 
 void setup() {
   Serial.begin(9600);
   pinMode(trigPin,OUTPUT);
   pinMode(echoPin,INPUT);
+  pinMode(buzzer,OUTPUT);
   lcd.begin(16,2);
   SPI.begin();
   myServo.attach(servoPin);
@@ -57,7 +59,7 @@ void loop() {
   
   float distance = checkDistance();
 
-  if(distance < 20) {
+  if(distance < 10) {
     if (flag == FAR){
       lcd.print("Hello!");
       flag = NEAR;
@@ -72,16 +74,25 @@ void loop() {
     if(rightCard()) {
       flag = OPEN;
       lcd.clear();
-      lcd.print("open!");
+      lcd.print("OPEN!");
       Serial.println("Open");
       myServo.write(90);
+      tone(6,300,300);
+      noTone(6);
+      tone(6,523,300);
 
       delay(2000);
       lcd.clear();
       myServo.write(0);
     }
     else{
+      lcd.clear();
       Serial.println("Not Right Card");
+      lcd.print("NOT RIGHT CARD");
+      tone(6,600,300);
+      delay(2000);
+      lcd.clear();
+      lcd.print("Hello!");
     }
       
   }
